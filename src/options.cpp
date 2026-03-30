@@ -16,15 +16,17 @@ CLI::ProgramOpts CommandLine::parse_opts(int argc, char* argv[]) {
 }
 
 std::vector<File> CommandLine::parse_files(int argc, char* argv[]) {
-    constexpr auto eoo = "--";
     std::vector<File> files;
 
+    bool eoo{};
     for (int i{1}; i < argc; ++i) {
         std::string f{argv[i]};
 
         // we have seen end of options, '--'
         // or doesn't start with '-', a possible option
-        if (f == eoo || !f.starts_with('-'))
+        if (f == "--")
+            eoo = true;
+        else if (eoo || f == "-" || !f.starts_with('-'))
             files.push_back(f);
     }
 
