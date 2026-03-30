@@ -5,11 +5,21 @@
 
 #include "options.h"
 
+CLI g_cli{};
+CLI::ProgramOpts g_options;
+
 void print_contents(std::istream& ins) {
     std::stringstream ss{};
+    std::string line{};
+    static int line_num{1};
     ss << ins.rdbuf();
-    auto str{ss.str()};
-    std::cout << str;
+
+    while (std::getline(ss, line)) {
+        // todo: format the line output
+        if (g_options.test(CLI::Options::LINES))
+            std::cout << '[' << line_num++ << "] ";
+        std::cout << line << '\n';
+    }
 }
 
 void print_file(File file) {
@@ -20,14 +30,13 @@ void print_file(File file) {
     else if ((fs::is_regular_file(file) || fs::is_symlink(file)) && ifs)
         print_contents(ifs);
     else
-        std::cout << "WARNING: " << file
+        std::clog << "WARNING: " << file
                 << " is not a valid file path or bad file.\n";
 }
 
 int main(int argc, char* argv[]) {
-    CLI opts{};
-    auto program_opts{opts.parse_opts(argc, argv)};
-    auto program_files{opts.parse_files(argc, argv)};
+    g_options = g_cli.parse_opts(argc, argv);
+    auto program_files{g_cli.parse_files(argc, argv)};
 
     for (const auto& file : program_files) {
         print_file(file);
