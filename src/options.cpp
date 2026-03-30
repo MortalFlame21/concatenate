@@ -30,6 +30,9 @@ std::vector<File> CommandLine::parse_files(int argc, char* argv[]) {
             files.push_back(f);
     }
 
+    if (files.empty())
+        files.push_back("-"); // push empty
+
     return files;
 }
 
