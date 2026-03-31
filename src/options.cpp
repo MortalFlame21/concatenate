@@ -6,8 +6,7 @@ CLI::ProgramOpts CommandLine::parse_opts(int argc, char* argv[]) {
     for (int i{1}; i < argc; ++i) {
         std::string_view opt{argv[i]};
 
-        // end of options.
-        if (opt == "--")
+        if (opt == "--") // end of options.
             break;
 
         parse_opt(opt);
@@ -37,10 +36,11 @@ std::vector<File> CommandLine::parse_files(int argc, char* argv[]) {
 }
 
 void CommandLine::parse_opt(std::string_view opt) {
-    if (!opt.starts_with('-'))
-        return;
-    // attempt parse word
-    set_opt(opt.substr(1, opt.size() - 1));
+    if (!opt.starts_with("--")) // attempt parse word
+        set_opt(opt.substr(1, opt.size() - 1));
+    else if (opt.starts_with('-')) // parse flags of a character
+        for (size_t i{}; i < opt.size(); ++i)
+            set_opt(opt.substr(i, 1));
 }
 
 void CommandLine::set_opt(std::string_view opt) {
