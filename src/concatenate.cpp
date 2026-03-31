@@ -1,24 +1,36 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 #include "options.h"
 
 CLI g_cli{};
 CLI::ProgramOpts g_options;
 
+std::string format_line(std::string_view line) {
+    std::stringstream ss{};
+    for (const auto& c : line) {
+        if (c == '\t' && g_options.test(CLI::Options::TABS))
+            ss << "\\t";
+        else
+            ss << c;
+    }
+    return ss.str() + (g_options.test(CLI::Options::LINES) ? "\\n" : "");
+}
+
 void print_contents(std::istream& ins) {
     std::stringstream ss{};
     std::string line{};
-    static int line_num{1};
     ss << ins.rdbuf();
 
     while (std::getline(ss, line)) {
         // todo: format the line output
-        if (g_options.test(CLI::Options::LINES))
+        if (g_options.test(CLI::Options::LINES)) {
+            static int line_num{1};
             std::cout << '[' << line_num++ << "] ";
-        std::cout << line << '\n';
+        }
+        std::cout << format_line(line) << '\n';
     }
 }
 
@@ -30,8 +42,7 @@ void print_file(File file) {
     else if ((fs::is_regular_file(file) || fs::is_symlink(file)) && ifs)
         print_contents(ifs);
     else
-        std::clog << "WARNING: " << file
-                << " is not a valid file path or bad file.\n";
+        std::clog << "WARNING: " << file << " is not a valid file path or bad file.\n";
 }
 
 int main(int argc, char* argv[]) {
