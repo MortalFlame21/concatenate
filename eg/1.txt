@@ -1,0 +1,12 @@
+this is an example file
+with a couple of newlines
+and two 	tabs.
+
+
+
+in addition the example file
+is broken for an unknown
+reason.
+?
+	? ?
+$ $
