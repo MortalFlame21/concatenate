@@ -16,7 +16,8 @@ std::string format_line(std::string_view line) {
         else
             ss << c;
     }
-    return ss.str() + (g_options.test(CLI::Options::LINES) ? "\\n" : "");
+    // fix: still prints when there is no newline !
+    return ss.str() + (g_options.test(CLI::Options::ENDS) ? "\\n" : "");
 }
 
 void print_contents(std::istream& ins) {
