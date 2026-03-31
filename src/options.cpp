@@ -46,8 +46,10 @@ void CommandLine::parse_opt(std::string_view opt) {
 void CommandLine::set_opt(std::string_view opt) {
     if (opt == "-all" || opt == "a")
         options_ |= ALL_OPTS;
-    else if (opt == "-tabs" || opt == "t")
-        options_.set(TABS);
     else if (opt == "-lines" || opt == "l")
-        options_.set(LINES);
+        options_.set(Options::LINES);
+    else if (opt == "-ends" || opt == "e")
+        options_.set(Options::ENDS);
+    else if (opt == "-tabs" || opt == "t")
+        options_.set(Options::TABS);
 }
